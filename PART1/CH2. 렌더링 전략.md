@@ -263,4 +263,5 @@ Next.js는 빌드 과정에서 페이지를 렌더링할 때 이 함수를 호�
 3. 10분이 지나고 해당 페이지에 대한 새로운 요청이 들어오면 Next.js는 이 페이지를 서버에서 다시 렌더링하고 getStaticProps함수를 다시 호출한다. 그리고 렌더링한 페이지를 저장해서 새로운 정적 페이지로 만들고 이전에 만든 정적페이지를 새로 만든 페이지로 덮어씀
 4. 이후 10분간 동일한 페이지에 대한 모든 요청에 대해 새로 만든 정적 페이지를 제공
 
-![캡처.PNG](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5b662e87-18a9-426e-92ce-5e308f6fed16/%EC%BA%A1%EC%B2%98.png)
+![캡처 PNG](https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/56775622-f995-4b39-b8b6-1bb828543ed1)
+
