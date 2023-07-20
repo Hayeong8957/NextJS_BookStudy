@@ -187,7 +187,8 @@ module.exports = {
 
 - Next.js 프로젝트 생성하기 에러
 
-![Untitled](CH1%20-%20%E1%84%92%E1%85%A1%E1%84%8B%E1%85%A7%E1%86%BC%2094bb524f3c8f42b892c037775ae8b8b6/Untitled.png)
+![Untitled](https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/246033b0-5770-405f-a6ce-7bce00c44b07)
+
 
 명령어가 먹히지 않는 문제가 발생했다..
 
