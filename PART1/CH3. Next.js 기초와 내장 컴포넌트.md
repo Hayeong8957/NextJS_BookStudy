@@ -127,19 +127,19 @@ Next.js는 기본적으로 현재 화면에 표시되는 페이지의 모든 Lin
 ```jsx
 <Link
   ref={{
-		pathname: '/blog/[date]/[slug]'
-		query: {
-			date: '2020-01-01',
-			slug: 'happy-new-year',
-			foo: 'bar'
-		}
-	}}
+    pathname: '/blog/[date]/[slug]'
+    query: {
+      date: '2020-01-01',
+      slug: 'happy-new-year',
+      foo: 'bar'
+    }
+  }}
 >
   Read Post
 </Link>
 ```
 
-⇒ http://localhost:3000/blog/2020-01-01/happy-new-year?foo=bar 라[는](http://localhost:3000/blog/2020-01-01/happy-new-year?foo=bar라는) 주소로 이동
+⇒ http://localhost:3000/blog/2020-01-01/happy-new-year?foo=bar 라는 주소로 이동
 
 ### router.push 메서드
 
@@ -542,22 +542,22 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 // Next.js 애플리케이션이 작동하기 위해 필요한 네 개의 컴포넌트를 순서대로 불러온다.
 
 Class MyDocument extends Document {
-	static async getInitialProps(ctx) {
-		const initialProps = await Document.getInitialProps(ctx);
-		return { ...initialProps };
-	}
+  static async getInitialProps(ctx) {
+    const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
+  }
 
-	render() {
-		return(
-			<HTML>
-				<Head/>
-				<body>
-					<Main/>
-					<NextScript/>
-				</body>
-			</HTML>
-		)
-	}
+  render() {
+    return(
+      <HTML>
+        <Head/>
+        <body>
+          <Main/>
+          <NextScript/>
+        </body>
+      </HTML>
+    )
+  }
 }
 
 export default MyDocument;
