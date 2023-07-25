@@ -459,3 +459,170 @@ function UserPage({ username }) {
 > - 컴포넌트 목록을 오직 서버에서만 렌더링하도록 → 서버에서 렌더링할 수 없는 경우에는 이 방법은 못 씀
 > - JWT, API 키 등과 같은 인증 기법을 사용하여 인증되고 권한이 있는 사용자만 특정 API를 사용할 수 있도록 만듦
 > - 백엔드 프레임워크를 사용
+
+# 4-3. GraphQL API 사용하기
+
+- GraphQL : API에서 사용할 수 있는 질의 언어, REST나 SOAP같은 방식과는 다른 새로운 관점으로 API데이터를 다룬다.
+- GraphQL을 사용하면 꼭 필요한 데이터만 불러오도록 지정할 수 있으며 한 번의 요청으로 여러 곳의 데이터를 불러올 수 있다.
+- 사용할 데이터에 대해 정적이면서 강력한 타입 시스템을 제공
+
+> Apollo클라이언트를 사용 → 널리 사용되는 GraphQL 클라이언트로 리액트와 Next.js를 기본으로 지원
+
+```bash
+npm install @apollo/client graphql isomorphic-unfetch
+```
+
+- isomorphic-unfetch : ApolloClient가 브라우저의 fetch API를 사용해서 HTTP 요청을 처리하므로 서버에서도 같은 기능을 사용할 수 있는 폴리필
+
+> lib/apollo/index.js파일에 Apollo 클라이언트를 만든다.
+
+```jsx
+import { useMemo } from 'react';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+
+let uri = '/api/graphql';
+let apolloClient;
+
+function createApolloClient() {
+  return new ApolloClient({
+    ssrMode: typeof window === 'undefined', // 같은 Apollo 인스턴스를 서버와 클라이언트에서 구분하여 사용할 수 있도록 함
+    link: new HttpLink({ uri }),
+    cache: new InMemoryCache(),
+  });
+}
+```
+
+> lib/apollo/index.js파일에 Apollo 클라이언트를 초기화하기 위한 함수 추가
+
+```jsx
+export function initApollo(initialState = null) {
+  const client = apolloClient || createApolloClient();
+
+  if (initialState) {
+    client.cache.restore({
+      ...client.extract(),
+      ...initialState,
+    });
+  }
+
+  if (typeof window === 'undefined') {
+    return client;
+  }
+
+  if (!apolloClient) {
+    apolloClient = client;
+  }
+
+  return client;
+}
+```
+
+→ 이 함수를 사용하면 페이지마다 새로운 Apollo 클라이언트를 만들지 않아도 됨 → 대신 만든 클라이언트 인스턴스를 apolloClient변수에 저장하며 이 인스턴스를 함수 인자에 초기 상태값으로 전달한다.
+
+→ 다른 페이지로 이동하면 이 초기 상태값을 initApollo 함수로 전달하고, 해당 함수는 지역 캐시값과 전달받은 초기 상태값을 합쳐서 전체 상태값을 만든 다음 사용한다.
+
+→ 복잡한 초기 상태를 가지고 매번 Apollo 클라이언트를 초기화하는 것은 성능상 큰 부담 → 리액트의 useMemo 훅을 사용
+
+> useMemo 사용 부분
+
+```jsx
+export function useApollo(initialState) {
+  return useMemo(() => initApollo(initialState), [initialState]);
+}
+```
+
+> \_app.js에서 Apollo 컨텍스트 제공자
+
+```jsx
+import { useApollo } from '@/lib/apollo';
+import { ApolloProvider } from '@apollo/client';
+
+export default function App({ Component, pageProps }) {
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
+  return (
+    <ApolloProvider client={apolloClient}>
+      <Component {...pageProps} />
+    </ApolloProvider>
+  );
+}
+```
+
+> lib/apollo/queries/getLatestSigns ~> GraphQL에서 사용할 질의문
+
+```jsx
+import { gql } from '@apollo/client';
+
+const GET_LATEST_SIGNS = gql`
+  query GetLatestSigns($limit: Int! = 10, $skip: Int! = 0) {
+    sign(offset: $skip, limit: $limit, order_by: { created_at: desc }) {
+      uuid
+      created_at
+      content
+      nickname
+      country
+    }
+  }
+`;
+
+export default GET_LATEST_SIGNS;
+```
+
+> pages/index.js에서 질의문 불러와 사용
+
+```jsx
+import { useQuery } from '@apollo/client';
+import GET_LATEST_SIGNS from '@/lib/apollo/queries/getLatestSigns';
+
+function HomePage() {
+  const { loading, data } = useQuery(GET_LATEST_SIGNS, {
+    fetchPolicy: 'no-cache',
+  });
+
+  return <div></div>;
+}
+
+export default HomePage;
+```
+
+- loading: 질의 처리 요청이 끝났는지 아니면 처리 중인지에 따라 true | false
+- error: 요청이 어떤 이유로든 실패하면 이를 받아서 처리 or 사용자에게 관련 메세지 출력
+- data: 요청한 질의의 결과 데이터
+
+> 화면 만들기 - tailwind 적용
+
+- 차례대로 설치, tailwind config파일 생성
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+- 생성된 tailwind config파일에 tailwind를 적용시킬 파일들의 path를 정함
+
+```jsx
+module.exports = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+- 프로젝트에 기본적으로 Tailwind CSS를 쓸 수 있게 globals.css파일에 @tailwind를 추가
+
+```jsx
+// ./styles/global.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+<img width="1054" alt="image" src="https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/15abcb83-4215-4eba-89ff-11b53f4bf5c6">
+<img width="996" alt="image" src="https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/e0ccbbad-517e-4f51-abae-cbac0cd1dd0d">
+
+> 나머지는 화면 그리는 코드들임 전체 코드는 [nextjs-playground-ch4]()
