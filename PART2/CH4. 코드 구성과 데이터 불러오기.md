@@ -625,4 +625,4 @@ module.exports = {
 <img width="1054" alt="image" src="https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/15abcb83-4215-4eba-89ff-11b53f4bf5c6">
 <img width="996" alt="image" src="https://github.com/Hayeong8957/NextJS_BookStudy/assets/70371342/e0ccbbad-517e-4f51-abae-cbac0cd1dd0d">
 
-> 나머지는 화면 그리는 코드들임 전체 코드는 [nextjs-playground-ch4]()
+> 나머지는 화면 그리는 코드들임 전체 코드는 [nextjs-playground-ch4](https://github.com/Hayeong8957/NextJS_BookStudy/tree/main/nextjs-playground-ch4)
