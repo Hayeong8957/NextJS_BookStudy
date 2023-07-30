@@ -1,3 +1,4 @@
+// graphQL + Apollo 사용
 import { useQuery } from '@apollo/client';
 import GET_LATEST_SIGNS from '@/lib/apollo/queries/getLatestSigns';
 import Sign from '@/components/Sign';
@@ -29,3 +30,19 @@ function HomePage() {
 }
 
 export default HomePage;
+
+// context api 예제
+// import ProductCard from '@/components/ProductCard';
+// import products from '@/data/products';
+
+// function Home() {
+//   return (
+//     <div className='grid grid-cols-4 gap-4'>
+//       {products.map((product) => (
+//         <ProductCard key={product.id} {...product} />
+//       ))}
+//     </div>
+//   );
+// }
+
+// export default Home;
