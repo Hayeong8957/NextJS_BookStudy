@@ -1,31 +1,41 @@
-import { Fragment } from 'react';
-import HeaderComponent from '@/components/common/Header';
-import styles from '@/styles/header.module.scss';
-import Link from 'next/link';
-import { AiOutlineShareAlt } from 'react-icons/ai';
-import { VscFeedback } from 'react-icons/vsc';
+import { Fragment, useEffect } from 'react';
+import MapSection from '@/components/home/MapSection';
+import { Store } from '@/types/store';
+import { NextPage } from 'next';
+import useStores from '@/hooks/useStores';
+import HomeHeader from '@/components/home/Header';
 
-export default function Home() {
+interface Props {
+  stores: Store[];
+}
+
+const Home: NextPage<Props> = ({ stores }) => {
+  const { initializeStores } = useStores();
+
+  useEffect(() => {
+    initializeStores(stores); // stores를 인자로 넣음
+  }, [initializeStores, stores]);
+
   return (
     <Fragment>
-      <HeaderComponent
-        rightElements={[
-          <button
-            key='button'
-            onClick={() => {
-              alert('복사');
-            }}
-            className={styles.box}
-            style={{ marginRight: 8 }}
-          >
-            <AiOutlineShareAlt size={20} />
-          </button>,
-          <Link href='/feedback' key='link' className={styles.box}>
-            <VscFeedback size={20} />
-          </Link>,
-        ]}
-      />
-      <main></main>
+      <HomeHeader />
+      <main style={{ width: '100%', height: '100%' }}>
+        <MapSection />
+      </main>
     </Fragment>
   );
+};
+
+export default Home;
+
+export async function getStaticProps() {
+  // const stores = await fetch(
+  //   `${process.env.NEXT_PUBLIC_API_URL}/api/stores`,
+  // ).then((response) => response.json());
+  const stores = (await import('@/public/stores.json')).default;
+
+  return {
+    props: { stores },
+    revalidate: 60 * 60,
+  };
 }

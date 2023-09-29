@@ -9,19 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/font": "13.0.7",
+    "@types/navermaps": "^3.7.0",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "firebase": "^9.15.0",
+    "copy-to-clipboard": "^3.3.3",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "next": "13.4.19",
+    "next-seo": "^6.1.0",
+    "next-sitemap": "^4.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
     "sass": "^1.66.1",
+    "swr": "^2.0.0",
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.6.1",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "3.0.3"
   }
